@@ -1,0 +1,208 @@
+﻿{
+    "name":  "Case 1",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "triggerAtHour":  15
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.4,
+                      "position":  [
+                                       0,
+                                       0
+                                   ],
+                      "id":  "85566042-629c-4fbc-8c62-79e5f1474c01",
+                      "name":  "Schedule Trigger"
+                  },
+                  {
+                      "parameters":  {
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "REDACTED_SPREADSHEET_ID",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Spreadsheet to configure",
+                                                            "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/REDACTED_SPREADSHEET_ID/edit"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  2035713456,
+                                                           "mode":  "list",
+                                                           "cachedResultName":  "Sheet to configure",
+                                                           "cachedResultUrl":  "https://docs.google.com/spreadsheets/d/REDACTED_SPREADSHEET_ID/edit#gid=REDACTED_SHEET_ID"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.7,
+                      "position":  [
+                                       224,
+                                       0
+                                   ],
+                      "id":  "0758d0b5-b36e-4f7b-bc76-20e767b6cb13",
+                      "name":  "Get row(s) in sheet",
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "REDACTED_GOOGLE_SHEETS_CREDENTIAL_ID",
+                                                                        "name":  "Google Sheets account (configure after import)"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict",
+                                                                            "version":  4
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "df5e8c37-6aab-4dd2-94a8-6c38b35fc2c4",
+                                                                                   "leftValue":  "={{ $json.ESTOQUE_ATUAL }}",
+                                                                                   "rightValue":  "={{ $json.ESTOQUE_MINIMO }}",
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "equals"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.filter",
+                      "typeVersion":  2.4,
+                      "position":  [
+                                       448,
+                                       0
+                                   ],
+                      "id":  "228dc5e2-c5f1-4953-bbff-7064d681719f",
+                      "name":  "Filter"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "xlsx",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.convertToFile",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       672,
+                                       0
+                                   ],
+                      "id":  "f758b88c-4ad3-47f7-8269-7c1411589980",
+                      "name":  "Convert to File"
+                  },
+                  {
+                      "parameters":  {
+                                         "sendTo":  "recipient@example.com",
+                                         "subject":  "Subject to configure",
+                                         "emailType":  "text",
+                                         "message":  "Message to configure",
+                                         "options":  {
+                                                         "appendAttribution":  false,
+                                                         "attachmentsUi":  {
+                                                                               "attachmentsBinary":  [
+                                                                                                         {
+
+                                                                                                         }
+                                                                                                     ]
+                                                                           }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.gmail",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       896,
+                                       0
+                                   ],
+                      "id":  "8a3ae647-be73-44e9-9754-4d1b715bf7fe",
+                      "name":  "Send a message",
+                      "webhookId":  "e35d77e3-9277-4a3a-adfb-bb82d6d254ba",
+                      "credentials":  {
+                                          "gmailOAuth2":  {
+                                                              "id":  "REDACTED_GMAIL_CREDENTIAL_ID",
+                                                              "name":  "Gmail account (configure after import)"
+                                                          }
+                                      }
+                  }
+              ],
+    "pinData":  {
+
+                },
+    "connections":  {
+                        "Schedule Trigger":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Get row(s) in sheet",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Get row(s) in sheet":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Filter",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Filter":  {
+                                       "main":  [
+                                                    [
+                                                        {
+                                                            "node":  "Convert to File",
+                                                            "type":  "main",
+                                                            "index":  0
+                                                        }
+                                                    ]
+                                                ]
+                                   },
+                        "Convert to File":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Send a message",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            }
+                    },
+    "active":  false,
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "binaryMode":  "separate"
+                 },
+    "versionId":  "adc60394-2430-4b78-b80e-37e677e251ea",
+    "meta":  {
+                 "templateCredsSetupCompleted":  true
+             },
+    "nodeGroups":  [
+
+                   ],
+    "id":  "b050f824-5250-43fe-a6df-b08bef23240b",
+    "tags":  [
+
+             ]
+}
